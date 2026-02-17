@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class ClienteTCP implements iDespachador, Runnable {
+public class ClienteTCP implements Runnable {
     private final BlockingQueue<MensajeEncolado> colaDeSalida;
     private volatile boolean ejecutando = true;
 
@@ -17,8 +17,7 @@ public class ClienteTCP implements iDespachador, Runnable {
         new Thread(this).start();
     }
 
-    // Método actualizado para recibir bytes y tipo
-    @Override
+
     public void enviar(String host, int puerto, byte[] datos, int tipo) throws IOException {
         try {
             colaDeSalida.put(new MensajeEncolado(host, puerto, datos, tipo));
