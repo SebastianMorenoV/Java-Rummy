@@ -9,8 +9,8 @@ import java.nio.charset.StandardCharsets;
 public class AppCliente {
     public static void main(String[] args) {
         ClienteTCP cliente = new ClienteTCP();
-        String host = "127.0.0.1"; 
-        int puerto = 5000;
+        String host = "10.178.15.87"; 
+        int puerto = 9000;
 
         try {
             // --- PRUEBA 1: MODO TEXTO (Original) ---

@@ -1,17 +1,20 @@
 package pruebas;
 
 import java.io.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class SerializadorProducto {
-    
+
     private static final String SEPARADOR = "/";
     private static final SimpleDateFormat FORMATO_FECHA = new SimpleDateFormat("dd/MM/yyyy");
 
-    // --- MÉTODOS EXISTENTES (TEXTO) ---
+    // Convierte un Producto a String
     public static String serializar(Producto p) {
-        if (p == null) return "";
+        if (p == null) {
+            return "";
+        }
         return String.join(SEPARADOR,
                 p.getClave(),
                 p.getNombre(),
@@ -22,21 +25,30 @@ public class SerializadorProducto {
         );
     }
 
-    public static Producto deserializar(String mensaje) throws Exception {
-        String[] datos = mensaje.split(SEPARADOR);
-        if (datos.length < 6) throw new IllegalArgumentException("Formato de mensaje incorrecto");
+    // Convierte un String a Producto
+    public static Producto deserializar(String mensaje) throws ParseException, NumberFormatException {
+        // CORRECTION: We add a limit of 6 to the split method.
+        // This ensures the split stops before breaking the date (DD/MM/AAAA).
+        String[] datos = mensaje.split(SEPARADOR, 6);
+
+        if (datos.length < 6) {
+            throw new IllegalArgumentException("Formato de mensaje incorrecto");
+        }
+
         Producto p = new Producto();
         p.setClave(datos[0]);
         p.setNombre(datos[1]);
         p.setPrecio(Double.valueOf(datos[2]));
         p.setCantidad(Integer.parseInt(datos[3]));
         p.setMarca(datos[4]);
+
+        // Now datos[5] will contain the full date string (e.g., "17/02/2026")
         p.setFechaRegistro(FORMATO_FECHA.parse(datos[5]));
+
         return p;
     }
 
     // --- NUEVOS MÉTODOS (BINARIO) ---
-    
     // Serializa a bytes con tamaños fijos
     public static byte[] serializarBinario(Producto p) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -75,10 +87,11 @@ public class SerializadorProducto {
     }
 
     // --- UTILIDADES PARA STRINGS FIJOS ---
-    
     // Escribe chars rellenando con espacios si es corto, o cortando si es largo
     private static void writeStringFijo(DataOutputStream dos, String str, int length) throws IOException {
-        if (str == null) str = "";
+        if (str == null) {
+            str = "";
+        }
         // Ajustar tamaño
         if (str.length() > length) {
             str = str.substring(0, length);

@@ -16,7 +16,7 @@ public class AppServidor {
         
         try {
             // Iniciamos el servidor en el puerto 5000
-            servidor.iniciar(5000);
+            servidor.iniciar(9000);
         } catch (IOException e) {
             System.err.println("Error en el servidor: " + e.getMessage());
         }
