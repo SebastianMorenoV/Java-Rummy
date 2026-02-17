@@ -4,46 +4,41 @@ import sockets.ClienteTCP;
 import pruebas.Producto;
 import pruebas.SerializadorProducto;
 import java.util.Date;
-import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class AppCliente {
     public static void main(String[] args) {
-        // Instanciamos el cliente TCP
         ClienteTCP cliente = new ClienteTCP();
-        
-        // Configuración
-        String host = "localhost"; // O la IP del servidor
+        String host = "127.0.0.1"; 
         int puerto = 5000;
-        int N = 5; // Número de productos a enviar
-        
-        System.out.println("Iniciando envío de " + N + " productos...");
 
-        for (int i = 1; i <= N; i++) {
-            // Crear una instancia de prueba de Producto
-            Producto p = new Producto(
-                "CLAVE-" + i,
-                "Producto " + i,
-                100.0 * i,      // Precio
-                10 + i,         // Cantidad
-                "MarcaGenerica",
-                new Date()      // Fecha actual
-            );
+        try {
+            // --- PRUEBA 1: MODO TEXTO (Original) ---
+            System.out.println("\n--- ENVIANDO EN MODO TEXTO ---");
+            Producto p1 = new Producto("TXT001", "Coca Cola Texto", 25.50, 10, "Femsa", new Date());
+            
+            String msgTxt = SerializadorProducto.serializar(p1);
+            byte[] bytesTxt = msgTxt.getBytes(StandardCharsets.UTF_8);
+            
+            // Enviamos con tipo 0
+            cliente.enviar(host, puerto, bytesTxt, 0); 
+            Thread.sleep(500);
 
-            // Serializar a String: clave/nombre/precio/cantidad/marca/DD/MM/AAAA
-            String mensaje = SerializadorProducto.serializar(p);
+            // --- PRUEBA 2: MODO BINARIO (Nuevo) ---
+            System.out.println("\n--- ENVIANDO EN MODO BINARIO ---");
+            Producto p2 = new Producto("BIN002", "Pepsi Binaria", 22.00, 50, "Pepsico", new Date());
+            
+            byte[] bytesBin = SerializadorProducto.serializarBinario(p2);
+            
+            // Enviamos con tipo 1
+            cliente.enviar(host, puerto, bytesBin, 1);
+            
+            Thread.sleep(1000); // Esperar a que se envíen
 
-            try {
-                // Enviar usando el método enviar del ClienteTCP
-                cliente.enviar(host, puerto, mensaje);
-                
-                // Pequeña pausa para no saturar la consola de visualización (opcional)
-                Thread.sleep(500); 
-            } catch (IOException | InterruptedException e) {
-                System.err.println("Error al enviar producto " + i);
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         
-        // Detener el hilo del cliente al finalizar
         cliente.detener();
     }
 }

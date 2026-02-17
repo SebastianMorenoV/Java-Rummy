@@ -1,22 +1,15 @@
 package utils;
 
-/**
- * Clase de utilidad  utilizada para encapsular y transportar 
- * un mensaje junto con su destino de red (`host` y `puerto`). 
- * Se utiliza principalmente en el ClienteTCP (Despachador) para 
- * almacenar mensajes en la cola de salida antes de su envío asíncrono.
- *
- * @author Sebastian Moreno
- */
 public class MensajeEncolado {
-
     public final String host;
     public final int puerto;
-    public final String mensaje;
+    public final byte[] datos; // Cambiado de String a byte[]
+    public final int tipo;     // 0 = Texto, 1 = Binario
 
-    public MensajeEncolado(String host, int puerto, String mensaje) {
+    public MensajeEncolado(String host, int puerto, byte[] datos, int tipo) {
         this.host = host;
         this.puerto = puerto;
-        this.mensaje = mensaje;
+        this.datos = datos;
+        this.tipo = tipo;
     }
 }
