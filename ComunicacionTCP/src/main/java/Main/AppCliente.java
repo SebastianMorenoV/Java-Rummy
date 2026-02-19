@@ -10,7 +10,7 @@ public class AppCliente {
 
     public static void main(String[] args) {
         ClienteTCP cliente = new ClienteTCP();
-        String host = "192.168.100.98";
+        String host = "10.20.5.178";
         int puerto = 9000;
 
         try {
@@ -23,19 +23,20 @@ public class AppCliente {
             cliente.enviar(host, puerto, bytesTxt, 0);
             Thread.sleep(500);
 
-            System.out.println("\n--- ENVIANDO EN MODO BINARIO ---");
+           System.out.println("\n--- ENVIANDO EN MODO BINARIO ---");
             Producto p2 = new Producto("BIN002", "Pepsi Binaria", 22.00, 50, "Pepsico", new Date());
 
             byte[] bytesBin = SerializadorProducto.serializarBinario(p2);
 
-            System.out.println("Vista del paquete crudo (Hexadecimal):");
+            System.out.println("Vista del paquete crudo (Binario):");
             StringBuilder sb = new StringBuilder();
             int contador = 0;
             for (byte b : bytesBin) {
-                sb.append(String.format("%02X ", b));
+                String binario = String.format("%8s", Integer.toBinaryString(b & 0xFF)).replace(' ', '0');
+                sb.append(binario).append(" ");
 
                 contador++;
-                if (contador % 16 == 0) {
+                if (contador % 8 == 0) {
                     sb.append("\n");
                 }
             }
