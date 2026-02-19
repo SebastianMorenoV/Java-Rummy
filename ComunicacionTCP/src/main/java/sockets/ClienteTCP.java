@@ -1,7 +1,6 @@
 package sockets;
 
 import utils.MensajeEncolado;
-import contratos.iDespachador;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -46,12 +45,8 @@ public class ClienteTCP implements Runnable {
         try (Socket socket = new Socket(msg.host, msg.puerto); 
              DataOutputStream out = new DataOutputStream(socket.getOutputStream())) {
             
-            // PROTOCOLO PROPIO:
-            // 1. Enviar Tipo (byte)
             out.writeByte(msg.tipo);
-            // 2. Enviar Longitud (int)
             out.writeInt(msg.datos.length);
-            // 3. Enviar Datos (bytes)
             out.write(msg.datos);
             
             System.out.println("[Cliente] Enviado paquete de " + msg.datos.length + " bytes (Tipo: " + (msg.tipo == 0 ? "TXT" : "BIN") + ")");

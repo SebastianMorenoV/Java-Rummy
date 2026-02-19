@@ -1,6 +1,5 @@
 package procesadores;
 
-import contratos.iProcesador;
 import pruebas.Producto;
 import pruebas.SerializadorProducto;
 import java.nio.charset.StandardCharsets;
@@ -17,12 +16,10 @@ public class ProcesadorProductos   {
             String modo = "";
 
             if (tipo == 0) {
-                // MODO TEXTO
                 modo = "TEXTO";
                 String mensajeStr = new String(datos, StandardCharsets.UTF_8);
                 producto = SerializadorProducto.deserializar(mensajeStr);
             } else if (tipo == 1) {
-                // MODO BINARIO
                 modo = "BINARIO";
                 producto = SerializadorProducto.deserializarBinario(datos);
             }

@@ -2,7 +2,6 @@ package sockets;
 
 import utils.PeticionCliente;
 import contratos.iListener;
-import contratos.iProcesador;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -32,16 +31,12 @@ public class ServerTCP implements iListener {
                 Socket socketCliente = serverSocket.accept();
                 DataInputStream in = new DataInputStream(socketCliente.getInputStream());
 
-                // PROTOCOLO DE LECTURA:
-                // 1. Leer Tipo
+
                 byte tipo = in.readByte();
-                // 2. Leer Longitud
                 int longitud = in.readInt();
-                // 3. Leer Datos
                 byte[] buffer = new byte[longitud];
                 in.readFully(buffer);
 
-                // Encolamos (el constructor de PeticionCliente captura el System.nanoTime())
                 colaDeEntrada.put(new PeticionCliente(socketCliente, buffer, tipo));
 
             } catch (IOException e) {
@@ -58,7 +53,6 @@ public class ServerTCP implements iListener {
             PeticionCliente peticion = null;
             try {
                 peticion = colaDeEntrada.take();
-                // Delegar al procesador pasando datos y métricas
                 this.procesador.procesar(peticion.ipCliente, peticion.datos, peticion.tipo, peticion.tiempoInicio);
 
             } catch (InterruptedException e) {
